@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16.10
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: panaderia
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./api-panaderia-main
+      dockerfile: Dockerfile
+    container_name: panaderia-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/panaderia
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: 12345
+
+  frontend:
+    build:
+      context: ./app-panaderia-main
+      dockerfile: Dockerfile
+    container_name: panaderia-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+  dashboard:
+    build:
+      context: ./app-panaderia-main/dashboard
+      dockerfile: Dockerfile
+    container_name: panaderia-dashboard
+    ports:
+      - "8501:8501"
+    depends_on:
+      - postgres
+    environment:
+      # Pasamos los datos de conexión para que Python sepa dónde está la base de datos
+      DB_HOST: postgres
+      DB_NAME: panaderia
+      DB_USER: admin
+      DB_PASS: 12345
+
+volumes:
+  pgdata:

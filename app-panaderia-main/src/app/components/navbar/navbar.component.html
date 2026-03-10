@@ -1,0 +1,68 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-logo">
+            <span class="logo-icon"><i class="fas fa-bread-slice"></i></span>
+            <span class="logo-text">Panadería Deluxe</span>
+        </a>
+
+        <div class="navbar-links">
+            <a routerLink="/" class="nav-link active">Inicio</a>
+            @if (authServicio.sesionIniciada()) {
+            <a routerLink="/productos" class="nav-link">Productos</a>
+            <a routerLink="/nosotros" class="nav-link">Nosotros</a>
+            <a routerLink="/contacto" class="nav-link">Contacto</a>
+            <a routerLink="/suscripcion" class="nav-link">Suscripción</a>
+            @if (rolUsuario === 'ADMIN') {
+            <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer" class="nav-link">Dashboard</a>
+            }
+            }
+        </div>
+
+        <div class="navbar-actions">
+            @if (!authServicio.sesionIniciada()) {
+            <a routerLink="registro" class="nav-link">Registro</a>
+            <a routerLink="login" class="nav-link outline">Iniciar Sesión</a>
+            }
+            @if (authServicio.sesionIniciada()) {
+            
+            <button class="cart-button" (click)="irAlCarrito()">
+                <i class="fas fa-shopping-cart cart-icon"></i>
+                @if (carritoCount > 0) {
+                <span class="cart-count">{{ carritoCount }}</span>
+                }
+            </button>
+
+            <button class="logout-button" (click)="logout()">
+                <i class="fas fa-sign-out-alt logout-icon"></i>
+                Cerrar Sesión
+            </button>
+            }
+            <button class="mobile-menu-btn" (click)="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="mobile-menu" [class.active]="isMenuOpen">
+        <a routerLink="/" class="mobile-link active">Inicio</a>
+        @if (authServicio.sesionIniciada()) {
+        <a routerLink="/productos" class="mobile-link">Productos</a>
+        <a routerLink="/nosotros" class="mobile-link">Nosotros</a>
+        <a routerLink="/contacto" class="mobile-link">Contacto</a>
+        <a routerLink="/suscripcion" class="mobile-link">Suscripción</a>
+        }
+
+        @if (!authServicio.sesionIniciada()) {
+        <a routerLink="registro" class="mobile-link">Registro</a>
+
+        <a routerLink="login" class="mobile-link">Iniciar
+            Sesión</a>
+        }
+        @if (authServicio.sesionIniciada()) {
+        <button class="button" (click)="logout()">Cerrar Sesión</button>
+        <button class="mobile-menu-btn" (click)="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        }
+    </div>
+</nav>
